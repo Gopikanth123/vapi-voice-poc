@@ -9,7 +9,7 @@
    Configuration
    ============================================================ */
 const CONFIG = {
-    backendUrl: 'http://localhost:8000',
+    backendUrl: '', // Empty string makes it use the same origin (works locally and on Render)
     sampleRate: 16000,
 };
 

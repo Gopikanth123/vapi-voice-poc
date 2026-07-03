@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: vapi-voice-assistant
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: "pip install -r backend/requirements.txt"
+    startCommand: "cd backend && uvicorn app:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: VAPI_API_KEY
+        sync: false # You will need to enter this manually in the Render dashboard
+      - key: VAPI_ASSISTANT_ID
+        value: "001414ad-ad65-405d-ad5b-1e016bb782eb"
+      - key: PYTHON_VERSION
+        value: "3.12.0"

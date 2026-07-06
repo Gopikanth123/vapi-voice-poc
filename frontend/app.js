@@ -530,17 +530,8 @@ function handleControlMessage(rawData) {
 }
 
 function handleConversationUpdate(msg) {
-    if (msg.conversation && Array.isArray(msg.conversation)) {
-        // Display the latest message if we haven't already
-        const latest = msg.conversation[msg.conversation.length - 1];
-        if (latest) {
-            const role = latest.role === 'assistant' ? 'ai' : 'user';
-            // Only add if it looks like a final message
-            if (latest.content && latest.content.trim()) {
-                addTranscriptMessage(role, latest.content);
-            }
-        }
-    }
+    // Vapi sends both 'transcript' and 'conversation-update' events.
+    // To prevent duplicate messages, we only append to the UI during 'transcript' events.
 }
 
 function handleTranscript(msg) {

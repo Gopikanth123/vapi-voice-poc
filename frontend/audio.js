@@ -162,6 +162,7 @@ class AudioPlayer {
         this.audioContext = null;
         this.gainNode = null;
         this.queue = [];
+        this.activeSources = []; // Track currently playing/scheduled sources
         this.isPlaying = false;
         this.nextStartTime = 0;
         this.onPlayingChange = null; // callback(isPlaying)
@@ -195,12 +196,17 @@ class AudioPlayer {
         source.start(startTime);
         this.nextStartTime = startTime + audioBuffer.duration;
 
+        this.activeSources.push(source);
+
         if (!this.isPlaying) {
             this.isPlaying = true;
             if (this.onPlayingChange) this.onPlayingChange(true);
         }
 
         source.onended = () => {
+            // Remove source from activeSources
+            this.activeSources = this.activeSources.filter((s) => s !== source);
+
             if (this.audioContext && this.audioContext.currentTime >= this.nextStartTime - 0.05) {
                 this.isPlaying = false;
                 if (this.onPlayingChange) this.onPlayingChange(false);
@@ -208,7 +214,35 @@ class AudioPlayer {
         };
     }
 
+    /** Stop all currently playing/scheduled audio immediately */
+    interrupt() {
+        console.log('[AudioPlayer] Interrupted, clearing active playback sources');
+        this.activeSources.forEach((source) => {
+            source.onended = null; // Prevent onended from firing and updating state
+            try {
+                source.stop();
+            } catch (e) {
+                // ignore if already stopped or not started
+            }
+        });
+        this.activeSources = [];
+        this.nextStartTime = 0;
+        if (this.isPlaying) {
+            this.isPlaying = false;
+            if (this.onPlayingChange) this.onPlayingChange(false);
+        }
+    }
+
     stop() {
+        // Stop all active sources first
+        this.activeSources.forEach((source) => {
+            source.onended = null;
+            try {
+                source.stop();
+            } catch (e) {}
+        });
+        this.activeSources = [];
+
         if (this.audioContext) {
             this.audioContext.close().catch(() => {});
             this.audioContext = null;

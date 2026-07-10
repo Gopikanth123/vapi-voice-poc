@@ -43,6 +43,20 @@ async def create_call():
 
     payload = {
         "assistantId": VAPI_ASSISTANT_ID,
+        "assistantOverrides": {
+            "startSpeakingPlan": {
+                "smartEndpointingPlan": {
+                    "provider": "livekit",
+                    "waitFunction": "2000 / (1 + exp(-10 * (x - 0.5)))",
+                },
+                "waitSeconds": 0.4,
+            },
+            "stopSpeakingPlan": {
+                "numWords": 0,
+                "voiceSeconds": 0.2,
+                "backoffSeconds": 1.0,
+            },
+        },
         "transport": {
             "provider": "vapi.websocket",
             "audioFormat": {

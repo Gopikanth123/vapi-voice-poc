@@ -25,6 +25,11 @@ const state = {
     timerSeconds: 0,
     animationFrame: null,
     particleAnimFrame: null,
+
+    // New state variables for transcript synchronization
+    assistantTranscriptText: null,
+    typewriterInterval: null,
+    currentAssistantMessageElement: null,
 };
 
 /* ============================================================
@@ -343,8 +348,98 @@ function addTranscriptMessage(role, text) {
     dom.transcriptBody.scrollTop = dom.transcriptBody.scrollHeight;
 }
 
+function updateAssistantTranscriptUI(text) {
+    if (dom.transcriptEmpty) {
+        dom.transcriptEmpty.style.display = 'none';
+    }
+
+    let msgTextEl;
+    if (!state.currentAssistantMessageElement) {
+        const msg = document.createElement('div');
+        msg.className = 'transcript-msg';
+        msg.innerHTML = `
+            <div class="msg-avatar ai">AI</div>
+            <div class="msg-content">
+                <div class="msg-name ai">Ava — AI Assistant</div>
+                <div class="msg-text ai" id="current-ai-text"></div>
+            </div>
+        `;
+        dom.transcriptBody.appendChild(msg);
+        state.currentAssistantMessageElement = msg;
+        msgTextEl = msg.querySelector('#current-ai-text');
+    } else {
+        msgTextEl = state.currentAssistantMessageElement.querySelector('.msg-text');
+    }
+
+    if (msgTextEl) {
+        msgTextEl.textContent = text;
+    }
+    dom.transcriptBody.scrollTop = dom.transcriptBody.scrollHeight;
+}
+
+function startAssistantTypewriter(fullText) {
+    // Clear any existing typewriter
+    stopAssistantTypewriter();
+
+    if (!fullText) return;
+
+    const words = fullText.split(' ');
+    let currentWordIndex = 0;
+    let displayedText = '';
+
+    // Show the first word immediately
+    displayedText = words[0] || '';
+    updateAssistantTranscriptUI(displayedText);
+    currentWordIndex = 1;
+
+    state.typewriterInterval = setInterval(() => {
+        if (currentWordIndex >= words.length) {
+            stopAssistantTypewriter();
+            return;
+        }
+        displayedText += ' ' + words[currentWordIndex];
+        updateAssistantTranscriptUI(displayedText);
+        currentWordIndex++;
+    }, 320);
+}
+
+function stopAssistantTypewriter() {
+    if (state.typewriterInterval) {
+        clearInterval(state.typewriterInterval);
+        state.typewriterInterval = null;
+    }
+}
+
+function finalizeAssistantTranscript(fullText) {
+    stopAssistantTypewriter();
+    if (fullText) {
+        updateAssistantTranscriptUI(fullText);
+    }
+    state.currentAssistantMessageElement = null;
+    state.assistantTranscriptText = null;
+}
+
+function interruptAssistantTranscript() {
+    stopAssistantTypewriter();
+    if (state.currentAssistantMessageElement) {
+        const msgTextEl = state.currentAssistantMessageElement.querySelector('.msg-text');
+        if (msgTextEl && msgTextEl.textContent) {
+            const text = msgTextEl.textContent.trim();
+            if (text && !text.endsWith('...')) {
+                msgTextEl.textContent = text + '...';
+            }
+        }
+    }
+    state.currentAssistantMessageElement = null;
+    state.assistantTranscriptText = null;
+}
+
 function clearTranscript() {
     dom.transcriptBody.innerHTML = '';
+    state.currentAssistantMessageElement = null;
+    state.assistantTranscriptText = null;
+    stopAssistantTypewriter();
+
     if (dom.transcriptEmpty) {
         const empty = document.createElement('div');
         empty.className = 'transcript-empty';
@@ -514,6 +609,14 @@ function handleControlMessage(rawData) {
             case 'speech-update':
                 handleSpeechUpdate(msg);
                 break;
+            case 'user-interrupted':
+                console.log('[App] User interrupted assistant');
+                if (state.audioPlayer) {
+                    state.audioPlayer.interrupt();
+                }
+                setStatus('listening', 'Listening...');
+                interruptAssistantTranscript();
+                break;
             case 'function-call':
                 console.log('[App] Function call:', msg);
                 break;
@@ -537,15 +640,35 @@ function handleConversationUpdate(msg) {
 function handleTranscript(msg) {
     if (msg.transcriptType === 'final' && msg.transcript) {
         const role = msg.role === 'assistant' ? 'ai' : 'user';
-        addTranscriptMessage(role, msg.transcript);
+        if (role === 'user') {
+            addTranscriptMessage('user', msg.transcript);
+        } else {
+            // Assistant transcript
+            state.assistantTranscriptText = msg.transcript;
+            // If the assistant is already speaking, start/update the typewriter
+            if (state.status === 'speaking') {
+                startAssistantTypewriter(msg.transcript);
+            }
+        }
     }
 }
 
 function handleSpeechUpdate(msg) {
     if (msg.status === 'started') {
         setStatus('speaking', 'AI Speaking...');
+        if (state.assistantTranscriptText) {
+            startAssistantTypewriter(state.assistantTranscriptText);
+        }
     } else if (msg.status === 'stopped') {
         setStatus('listening', 'Listening...');
+        finalizeAssistantTranscript(state.assistantTranscriptText);
+    } else if (msg.status === 'interrupted') {
+        console.log('[App] Speech interrupted, stopping local playback');
+        if (state.audioPlayer) {
+            state.audioPlayer.interrupt();
+        }
+        setStatus('listening', 'Listening...');
+        interruptAssistantTranscript();
     }
 }
 
@@ -554,6 +677,9 @@ function handleSpeechUpdate(msg) {
    ============================================================ */
 function cleanup() {
     stopTimer();
+    stopAssistantTypewriter();
+    state.assistantTranscriptText = null;
+    state.currentAssistantMessageElement = null;
 
     if (state.animationFrame) {
         cancelAnimationFrame(state.animationFrame);

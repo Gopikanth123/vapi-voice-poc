@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,9 +8,12 @@
     <title>ABC Home Staging — AI Voice Assistant</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="/static/style.css">
 </head>
+
 <body>
     <!-- Animated Background -->
     <div class="bg-animation">
@@ -30,14 +34,15 @@
             <div class="logo-group">
                 <div class="logo-icon">
                     <svg viewBox="0 0 40 40" fill="none">
-                        <rect x="4" y="16" width="32" height="20" rx="2" stroke="currentColor" stroke-width="2"/>
-                        <path d="M12 16V8a8 8 0 1 1 16 0v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        <rect x="10" y="22" width="6" height="8" rx="1" fill="currentColor" opacity="0.3"/>
-                        <rect x="24" y="22" width="6" height="8" rx="1" fill="currentColor" opacity="0.3"/>
+                        <rect x="4" y="16" width="32" height="20" rx="2" stroke="currentColor" stroke-width="2" />
+                        <path d="M12 16V8a8 8 0 1 1 16 0v8" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" />
+                        <rect x="10" y="22" width="6" height="8" rx="1" fill="currentColor" opacity="0.3" />
+                        <rect x="24" y="22" width="6" height="8" rx="1" fill="currentColor" opacity="0.3" />
                     </svg>
                 </div>
                 <div class="logo-text">
-                    <h1>ABC Home Staging</h1>
+                    <h1>VESTA HOME</h1>
                     <span class="logo-subtitle">AI Voice Assistant</span>
                 </div>
             </div>
@@ -84,16 +89,16 @@
                     <button class="btn btn-start" id="btnStart" onclick="window.app.startConversation()">
                         <div class="btn-glow"></div>
                         <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-                            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                            <line x1="12" y1="19" x2="12" y2="23"/>
-                            <line x1="8" y1="23" x2="16" y2="23"/>
+                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                            <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                            <line x1="12" y1="19" x2="12" y2="23" />
+                            <line x1="8" y1="23" x2="16" y2="23" />
                         </svg>
                         <span>Start Conversation</span>
                     </button>
                     <button class="btn btn-end" id="btnEnd" disabled onclick="window.app.endConversation()">
                         <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="6" y="6" width="12" height="12" rx="2"/>
+                            <rect x="6" y="6" width="12" height="12" rx="2" />
                         </svg>
                         <span>End Conversation</span>
                     </button>
@@ -104,26 +109,29 @@
             <section class="transcript-panel">
                 <div class="panel-header">
                     <h2>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
-                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20"
+                            height="20">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                         </svg>
                         Live Transcript
                     </h2>
                     <button class="btn-clear" id="btnClear" onclick="window.app.clearTranscript()">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
-                            <polyline points="3 6 5 6 21 6"/>
-                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"
+                            height="16">
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
                         </svg>
                         Clear
                     </button>
                 </div>
                 <div class="transcript-body" id="transcriptBody">
                     <div class="transcript-empty" id="transcriptEmpty">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48">
-                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" opacity="0.4"/>
-                            <path d="M19 10v2a7 7 0 0 1-14 0v-2" opacity="0.4"/>
-                            <line x1="12" y1="19" x2="12" y2="23" opacity="0.4"/>
-                            <line x1="8" y1="23" x2="16" y2="23" opacity="0.4"/>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48"
+                            height="48">
+                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" opacity="0.4" />
+                            <path d="M19 10v2a7 7 0 0 1-14 0v-2" opacity="0.4" />
+                            <line x1="12" y1="19" x2="12" y2="23" opacity="0.4" />
+                            <line x1="8" y1="23" x2="16" y2="23" opacity="0.4" />
                         </svg>
                         <p>Start a conversation to see the live transcript</p>
                     </div>
@@ -135,23 +143,23 @@
         <footer class="app-footer">
             <div class="footer-item">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                 </svg>
                 <span>End-to-end encrypted</span>
             </div>
             <div class="footer-item">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
-                    <circle cx="12" cy="12" r="10"/>
-                    <polyline points="12 6 12 12 16 14"/>
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
                 </svg>
                 <span>Low latency WebSocket</span>
             </div>
             <div class="footer-item">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                    <polyline points="22 4 12 14.01 9 11.01"/>
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                    <polyline points="22 4 12 14.01 9 11.01" />
                 </svg>
-                <span>Powered by Vapi AI</span>
+                <span>Powered by Redferns Tech</span>
             </div>
         </footer>
     </div>
@@ -159,4 +167,5 @@
     <script src="/static/audio.js"></script>
     <script src="/static/app.js"></script>
 </body>
+
 </html>
